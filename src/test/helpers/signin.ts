@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../../src/app";
+import app from "../../app";
 
 export const getAuthCookie = async (): Promise<string[] | undefined> => {
 	const email = 'test@test.com';

@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
 dotenv.config({path: './config.env'});
 import mongoose from 'mongoose';
+import app from './app';
 
-import app from './src/app';
 
 const port = process.env.PORT || 3000;
 
 const connectToDB = async () => {
-	await mongoose.connect('mongodb://ticketing-mongo-srv:27017/ticketing');
+	await mongoose.connect('mongodb://tickets-mongo-srv:27017/tickets');
 	console.log("Connected to mongoDB...");
 };
 

@@ -1,8 +1,7 @@
 import express from "express";
 import "express-async-errors";
 import cookieSession from "cookie-session";
-import { errorHandler } from "./middlewares/error";
-import { NotFoundError } from "@omer-ticketing/common";
+import { NotFoundError, errorHandler } from "@omer-ticketing/common";
 
 const app = express();
 app.set("trust proxy", true);
