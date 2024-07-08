@@ -1,6 +1,8 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
+jest.setTimeout(30000); // Set timeout to 30 seconds
+
 let mongo: any;
 
 beforeAll(async () => {
