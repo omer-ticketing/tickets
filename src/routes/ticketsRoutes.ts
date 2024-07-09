@@ -12,4 +12,6 @@ router.post("/",
 	ticketsController.createNewTicket
 );
 
+router.get("/:id", ticketsController.getTicket);
+
 export default router;
