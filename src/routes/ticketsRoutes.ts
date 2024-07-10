@@ -5,13 +5,24 @@ import * as ticketValidation from "../../utils/ticketValidators";
 
 const router = express.Router();
 
-router.post("/",
-	authMiddlewares.protect,
-	[...ticketValidation.titleValidation, ...ticketValidation.priceValidation],
-	validateRequest,
-	ticketsController.createNewTicket
-);
+router
+    .route("/")
+    .post(
+        authMiddlewares.protect,
+        [...ticketValidation.titleValidation, ...ticketValidation.priceValidation],
+        validateRequest,
+        ticketsController.createNewTicket
+    )
+    .get(ticketsController.getTickets);
 
-router.get("/:id", ticketsController.getTicket);
+router
+    .route("/:id")
+    .get(ticketsController.getTicket)
+    .patch(
+        authMiddlewares.protect,
+        [ticketValidation.titleIsStringValidation, ticketValidation.priceIsPositiveNumberValidation],
+        validateRequest,
+        ticketsController.updateTicket
+    );
 
 export default router;

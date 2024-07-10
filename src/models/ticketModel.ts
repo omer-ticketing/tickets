@@ -10,6 +10,10 @@ const ticketSchema = new mongoose.Schema({
 		type: Number,
 		required: [true, "A ticket must have a price."]
 	},
+	userId: {
+		type: String,
+		required: [true, "A ticket must have a user id"]
+	}
 },{
 	toJSON: {
 		transform(doc, ret) {
