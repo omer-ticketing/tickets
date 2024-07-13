@@ -28,7 +28,7 @@ export const getTicket = async (req: Request, res: Response): Promise<void> => {
 export const getTickets = async (req: Request, res: Response): Promise<void> => {
     const tickets = await Ticket.find({});
 
-    res.status(200).json({ status: "success", data: { tickets } });
+    res.status(200).json({ status: "success",results: tickets.length, data: { tickets } });
 };
 
 export const updateTicket = async (req: Request, res: Response): Promise<void> => {
