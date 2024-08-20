@@ -24,8 +24,9 @@ const ticketSchema = new mongoose.Schema({
 	}
 });
 
-ticketSchema.statics.build = async (attrs: TicketAttrs) => await Ticket.create(attrs);
 
 const Ticket = mongoose.model<TicketDoc, TicketModel>('Ticket', ticketSchema);
+
+ticketSchema.statics.build = async (attrs: TicketAttrs) => await Ticket.create(attrs);
 
 export default Ticket;
