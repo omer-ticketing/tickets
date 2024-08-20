@@ -5,6 +5,7 @@ import app from "../../app";
 import { getAuthCookie } from "../../test/helpers/signin";
 import Ticket from "../../models/ticketModel";
 import { createTicket } from "./helpers/ticket";
+import natsWrapper from '../../natsWrapper';
 
 describe("Tickets creation", () => {
 	it("Has a route handler listening to /api/tickets for post requests", async () => {
@@ -56,6 +57,20 @@ describe("Tickets creation", () => {
 		tickets = await Ticket.find({});
 		expect(tickets.length).toEqual(1);
 	});
+
+	it("publishes an event after adding a ticket", async () => {
+		let tickets = await Ticket.find({});
+		expect(tickets.length).toEqual(0); // in test environment we start with 0 tickets
+	
+		await createTicket().expect(201);
+	
+		// tickets = await Ticket.find({});
+		// expect(tickets.length).toEqual(1);
+		console.log(natsWrapper.client.publish);
+		
+		expect(natsWrapper.client.publish).toHaveBeenCalled()
+		
+	})
 })
 
 describe("Tickets fetching", () => {
@@ -137,9 +152,22 @@ describe("Ticket update", () => {
 			.set("Cookie", cookie)
 			.send({ title: newTitle })
 			.expect(200);
-			console.log({updatedTicketResponse});
-			
-	
 		expect(updatedTicketResponse.body.data.ticket.title).toEqual(newTitle)
 	});
+
+	it("publishes an event after updating a ticket", async () => {
+		const cookie = getAuthCookie();
+		const ticketResponse = await request(app).post("/api/tickets").set("Cookie", cookie).send({ title: 'title', price: 5 }).expect(201);		
+		const ticketId = ticketResponse.body.data.ticket.id;
+	
+		const newTitle = 'New title';
+		const updatedTicketResponse = await request(app)
+			.patch(`/api/tickets/${ticketId}`)
+			.set("Cookie", cookie)
+			.send({ title: newTitle })
+			.expect(200);
+		expect(updatedTicketResponse.body.data.ticket.title).toEqual(newTitle)
+
+		expect(natsWrapper.client.publish).toHaveBeenCalled();
+	})
 })

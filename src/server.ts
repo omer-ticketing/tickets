@@ -1,27 +1,34 @@
-import dotenv from 'dotenv';
-dotenv.config({path: './config.env'});
-import mongoose from 'mongoose';
-import app from './app';
-
+import dotenv from "dotenv";
+dotenv.config({ path: "./config.env" });
+import mongoose from "mongoose";
+import app from "./app";
+import natsWrapper from "./natsWrapper";
 
 const port = process.env.PORT || 3000;
 
-// TODO check if this is the right place for the err
-if (!process.env.JWT_SECRET) {
-	throw new Error("JWT secret must be defined.")
-}
+const init = async () => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error("JWT secret must be defined.");
+    }
 
-if (!process.env.MONGO_URI) {
-	throw new Error('MONGO_URI must be defined.')
-}
+    if (!process.env.MONGO_URI) {
+        throw new Error("MONGO_URI must be defined.");
+    }
+	
+	await natsWrapper.connect('ticketing', 'abc1234', 'http://nats-srv:4222');
+	natsWrapper.client.on('close', () => {
+		console.log('Nats connection closed.');
+		process.exit();
+	})
+	process.on('SIGINT', () => natsWrapper.client.close());
+	process.on('SIGTERM', () => natsWrapper.client.close());
 
-const connectToDB = async () => {
-	await mongoose.connect(process.env.MONGO_URI!);
-	console.log("Connected to mongoDB...");
+    await mongoose.connect(process.env.MONGO_URI!);
+    console.log("Connected to mongoDB...");
 };
 
-connectToDB();
+init();
 
 app.listen(port, () => {
-	console.log(`Server is running on port ${port}...`);
-})
+    console.log(`Server is running on port ${port}...`);
+});
