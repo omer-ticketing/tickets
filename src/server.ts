@@ -3,7 +3,7 @@ dotenv.config({ path: "./config.env" });
 import mongoose from "mongoose";
 import app from "./app";
 import natsWrapper from "./natsWrapper";
-import { ifNotExistThrowErr } from "../utils/helpers";
+import { ifNotExistThrowErr } from "./utils/helpers";
 
 const port = process.env.PORT || 3000;
 
