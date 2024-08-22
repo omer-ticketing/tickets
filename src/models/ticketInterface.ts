@@ -13,6 +13,6 @@ export interface TicketDoc extends mongoose.Document {
 }
 
 export interface TicketModel extends mongoose.Model<TicketDoc> {
-    build(attrs: TicketAttrs): TicketDoc;
+    build(attrs: TicketAttrs): Promise<TicketDoc>;
 }
 
