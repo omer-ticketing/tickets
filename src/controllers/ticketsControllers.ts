@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Ticket from "../models/ticketModel";
-import { NotAuthorizedError, NotFoundError } from "@omer-ticketing/common";
+import { BadRequestError, NotAuthorizedError, NotFoundError } from "@omer-ticketing/common";
 import { TicketCreatedPublisher } from "../events/publishers/ticketCreatedPublisher";
 import natsWrapper from "../natsWrapper";
 import { TicketUpdatedPublisher } from "../events/publishers/ticketUpdatedPublisher";
@@ -50,7 +50,11 @@ export const updateTicket = async (req: Request, res: Response): Promise<void> =
 	}
 	
 	if (ticket.userId !== req.user!.id) {
-		throw new NotAuthorizedError('You are not authorized to update the ticket')
+		throw new NotAuthorizedError('You cannot edit a reserved ticket')
+	}
+
+	if (ticket.orderId) {
+		throw new BadRequestError('This ticket is already reserved.')
 	}
 	
 	ticket.set(req.body);

@@ -14,7 +14,8 @@ const ticketSchema = new mongoose.Schema({
 	userId: {
 		type: String,
 		required: [true, "A ticket must have a user id"]
-	}
+	},
+	orderId: String
 },{
 	toJSON: {
 		transform(doc, ret) {
